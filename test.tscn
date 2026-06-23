@@ -6,11 +6,10 @@
 
 [node name="DebugGrid2D" type="Node2D" parent="." unique_id=2127548139]
 script = ExtResource("1_37kl0")
-grid_cell_count = Vector2i(15, 7)
-grid_size = Vector2i(960, 448)
+grid_cell_count = Vector2i(13, 5)
+grid_size = Vector2i(832, 320)
 grid_line_antialiased = true
 fill_enabled = true
-fill_checkerboard = true
 border_draw_mode = 2
 border_thickness = 0.5
 origin_marker_mode = 1
@@ -19,5 +18,4 @@ origin_line_thickness = 4.0
 origin_antialiased = true
 labels_draw = true
 labels_x_format = "X:x"
-labels_y_format = "Y:y"
 metadata/_custom_type_script = "uid://bqaldp5jfcw6l"

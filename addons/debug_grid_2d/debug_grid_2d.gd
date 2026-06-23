@@ -384,10 +384,15 @@ enum CoordinatesSpace {
 		queue_redraw()
 
 ## Validates properties to hide/show them in the editor.
-## [b]Warning:[/b] This relies on property names starting with specific prefixes (e.g. "grid_", "grid_line_").
-## When refactoring or adding new properties, ensure they follow these naming conventions or update this method.
 func _validate_property(property: Dictionary) -> void:
-	# Mapping des préfixes aux variables d'activation
+	var name: String = property.name
+	var infinite := grid_mode == GRID_MODE.INFINITE
+
+	var hide_if := func(condition: bool) -> void:
+		if condition:
+			property.usage = PROPERTY_USAGE_NO_EDITOR
+
+	# prefix -> activation toggle and the toggle's own property (kept visible)
 	var prefix_toggles: Dictionary[String, Dictionary] = {
 		"grid": {"toggle": grid_draw, "exclude": "grid_draw"},
 		"grid_line": {"toggle": grid_line_enabled, "exclude": "grid_line_enabled"},
@@ -398,52 +403,40 @@ func _validate_property(property: Dictionary) -> void:
 		"labels": {"toggle": labels_draw, "exclude": "labels_draw"},
 	}
 
-	# Vérification des préfixes
 	for prefix in prefix_toggles:
-		if property.name.begins_with(prefix):
-			var data = prefix_toggles[prefix]
-			if not data.toggle and property.name != data.exclude:
-				property.usage = PROPERTY_USAGE_NO_EDITOR
-				return
-
-	if grid_mode == GRID_MODE.INFINITE:
-		if property.name.begins_with("border_"):
+		var data := prefix_toggles[prefix]
+		if name.begins_with(prefix) and not data.toggle and name != data.exclude:
 			property.usage = PROPERTY_USAGE_NO_EDITOR
 			return
 
-	match property.name:
+	if infinite and name.begins_with("border_"):
+		property.usage = PROPERTY_USAGE_NO_EDITOR
+		return
+
+	match name:
 		"fill_secondary_color":
-			if not fill_checkerboard:
-				property.usage = PROPERTY_USAGE_NO_EDITOR
+			hide_if.call(not fill_checkerboard)
 		"grid_line_horizontal_color", "grid_line_vertical_color":
-			if not grid_line_decouple_axis_colors:
-				property.usage = PROPERTY_USAGE_NO_EDITOR
+			hide_if.call(not grid_line_decouple_axis_colors)
 		"grid_line_color":
-			if grid_line_decouple_axis_colors:
-				property.usage = PROPERTY_USAGE_NO_EDITOR
+			hide_if.call(grid_line_decouple_axis_colors)
 		"grid_cell_count":
-			if grid_mode == GRID_MODE.INFINITE:
-				property.usage = PROPERTY_USAGE_NO_EDITOR
+			hide_if.call(infinite)
 		"grid_size":
-			if grid_mode == GRID_MODE.INFINITE:
+			if infinite:
 				property.usage = PROPERTY_USAGE_NO_EDITOR
 			else:
 				property.usage = PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_READ_ONLY
 		"labels_format", "labels_font_color":
-			if labels_decouple_coordinates:
-				property.usage = PROPERTY_USAGE_NO_EDITOR
+			hide_if.call(labels_decouple_coordinates)
 		"labels_font_x_color", "labels_font_y_color", "labels_x_format", "labels_y_format":
-			if not labels_decouple_coordinates:
-				property.usage = PROPERTY_USAGE_NO_EDITOR
+			hide_if.call(not labels_decouple_coordinates)
 		"labels_font_x_secondary_color", "labels_font_y_secondary_color":
-			if not labels_decouple_coordinates or not fill_checkerboard:
-				property.usage = PROPERTY_USAGE_NO_EDITOR
+			hide_if.call(not labels_decouple_coordinates or not fill_checkerboard)
 		"labels_font_secondary_color":
-			if labels_decouple_coordinates or not fill_checkerboard:
-				property.usage = PROPERTY_USAGE_NO_EDITOR
+			hide_if.call(labels_decouple_coordinates or not fill_checkerboard)
 		"fill_antialiased":
-			if grid_line_enabled:
-				property.usage = PROPERTY_USAGE_NO_EDITOR
+			hide_if.call(grid_line_enabled)
 
 
 var _last_canvas_transform: Transform2D
@@ -465,14 +458,14 @@ func _process(_delta: float) -> void:
 			queue_redraw()
 
 func _get_visible_rect_in_local_space() -> Rect2:
-	var viewport_rect := get_viewport().get_visible_rect()
-	var canvas_transform := get_canvas_transform()
-	var global_transform := get_global_transform()
+	var viewport_rect : Rect2 = get_viewport().get_visible_rect()
+	var canvas_transform : Transform2D = get_canvas_transform()
+	var global_transform : Transform2D = get_global_transform()
 	
-	# Transform viewport rect (screen space) to local space
+	# transform viewport rect (screen space) to local space
 	# Local -> Global -> Viewport
 	# Viewport -> Global -> Local
-	var transform := (canvas_transform * global_transform).affine_inverse()
+	var transform : Transform2D = (canvas_transform * global_transform).affine_inverse()
 	return transform * viewport_rect
 
 func _get_visible_cell_range() -> Rect2i:
@@ -525,7 +518,7 @@ func _draw_fill() -> void:
 		for x in range(start_cell.x, end_cell.x):
 			for y in range(start_cell.y, end_cell.y):
 				var pos := Vector2(x, y) * cell_size_vector
-				var color := fill_color if (x + y) % 2 == 0 else fill_secondary_color
+				var color: Color = fill_color if (x + y) % 2 == 0 else fill_secondary_color
 				draw_rect(Rect2(pos, cell_size_vector), color, true, -1.0, fill_antialiased)
 		return
 
@@ -549,7 +542,6 @@ func _draw_origin() -> void:
 			var first_line_end := Vector2(origin_extents, origin_extents)
 			var second_line_start := Vector2(origin_extents, -origin_extents)
 			var second_line_end := Vector2(-origin_extents, origin_extents)
-			
 			var points := PackedVector2Array([first_line_start, first_line_end, second_line_start, second_line_end])
 			draw_multiline(points, origin_color, origin_line_thickness, origin_antialiased)
 		ORIGIN_DRAW_MARKER_MODE.CIRCLE:
@@ -597,7 +589,7 @@ func _draw_grid() -> void:
 	
 	var steps: int = subdivision_steps
 
-	# Vertical lines
+	#region vertical lines
 	
 	for x in range(start_cell.x, end_cell.x):
 		var x_position: int = x * grid_cell_size.x
@@ -605,7 +597,7 @@ func _draw_grid() -> void:
 		var start := Vector2(x_position, start_cell.y * grid_cell_size.y)
 		var end := Vector2(x_position, end_cell.y * grid_cell_size.y)
 		
-		# Check if this line is a "Major" line based on steps
+		# check if this line is a major line based on steps
 		if use_subdivision and (x % steps == 0):
 			major_points.append(start)
 			major_points.append(end)
@@ -613,8 +605,10 @@ func _draw_grid() -> void:
 			if grid_line_enabled:
 				minor_vertical_points.append(start)
 				minor_vertical_points.append(end)
+	
+	#endregion
 
-	# Horizontal lines 
+	#region horizontal lines 
 	
 	for y in range(start_cell.y, end_cell.y):
 		var y_position: int = y * grid_cell_size.y
@@ -628,22 +622,25 @@ func _draw_grid() -> void:
 			if grid_line_enabled:
 				minor_horizontal_points.append(start)
 				minor_horizontal_points.append(end)
+
+	#endregion
 		
-	# Draw Standard (Minor) Lines
+	# draw standard minor lines
 	if grid_line_decouple_axis_colors:
 		if not minor_horizontal_points.is_empty():
 			draw_multiline(minor_horizontal_points, grid_line_horizontal_color, grid_line_thickness, grid_line_antialiased)
 		if not minor_vertical_points.is_empty():
 			draw_multiline(minor_vertical_points, grid_line_vertical_color, grid_line_thickness, grid_line_antialiased)
 	else:
-		# Merge arrays for a single draw call if colors are unified
+		# merge arrays for a single draw call if colors are unified
 		minor_vertical_points.append_array(minor_horizontal_points)
 		if not minor_vertical_points.is_empty():
 			draw_multiline(minor_vertical_points, grid_line_color, grid_line_thickness, grid_line_antialiased)
 
-	# 2. Draw Subdivision (Major) Lines ON TOP
+	# draw subdivision major lines on top
 	if not major_points.is_empty():
 		draw_multiline(major_points, subdivision_line_color, subdivision_line_thickness, grid_line_antialiased)
+
 
 func _draw_labels() -> void:
 	var cell_size := Vector2(grid_cell_size)
