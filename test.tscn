@@ -1,15 +1,6 @@
 [gd_scene format=3 uid="uid://bhp3dj75bvgd0"]
 
 [ext_resource type="Script" uid="uid://bqaldp5jfcw6l" path="res://addons/debug_grid_2d/debug_grid_2d.gd" id="1_37kl0"]
-[ext_resource type="Script" uid="uid://beye4gn10jd5s" path="res://addons/debug_grid_2d/cell_properties.gd" id="2_8uh7m"]
-[ext_resource type="FontFile" uid="uid://dp33mq7gohx3r" path="res://addons/debug_grid_2d/fonts/Inconsolata/static/Inconsolata_SemiCondensed-Medium.ttf" id="3_6uqi0"]
-
-[sub_resource type="Resource" id="Resource_8uh7m"]
-script = ExtResource("2_8uh7m")
-render_mode = 1
-label_text = "shapoo"
-label_show = false
-metadata/_custom_type_script = "uid://beye4gn10jd5s"
 
 [node name="Node" type="Node" unique_id=837076488]
 
@@ -29,8 +20,4 @@ origin_antialiased = true
 labels_draw = true
 labels_x_format = "X:x"
 labels_y_format = "Y:y"
-cells_properties_draw = true
-cells_properties = Dictionary[Vector2i, ExtResource("2_8uh7m")]({
-Vector2i(0, 0): SubResource("Resource_8uh7m")
-})
 metadata/_custom_type_script = "uid://bqaldp5jfcw6l"
