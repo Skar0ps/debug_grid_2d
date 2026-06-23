@@ -1,0 +1,36 @@
+[gd_scene format=3 uid="uid://bhp3dj75bvgd0"]
+
+[ext_resource type="Script" uid="uid://bqaldp5jfcw6l" path="res://addons/debug_grid_2d/debug_grid_2d.gd" id="1_37kl0"]
+[ext_resource type="Script" uid="uid://beye4gn10jd5s" path="res://addons/debug_grid_2d/cell_properties.gd" id="2_8uh7m"]
+[ext_resource type="FontFile" uid="uid://dp33mq7gohx3r" path="res://addons/debug_grid_2d/fonts/Inconsolata/static/Inconsolata_SemiCondensed-Medium.ttf" id="3_6uqi0"]
+
+[sub_resource type="Resource" id="Resource_8uh7m"]
+script = ExtResource("2_8uh7m")
+render_mode = 1
+label_text = "shapoo"
+label_show = false
+metadata/_custom_type_script = "uid://beye4gn10jd5s"
+
+[node name="Node" type="Node" unique_id=837076488]
+
+[node name="DebugGrid2D" type="Node2D" parent="." unique_id=2127548139]
+script = ExtResource("1_37kl0")
+grid_cell_count = Vector2i(15, 7)
+grid_size = Vector2i(960, 448)
+grid_line_antialiased = true
+fill_enabled = true
+fill_checkerboard = true
+border_draw_mode = 2
+border_thickness = 0.5
+origin_marker_mode = 1
+origin_extents = 12.0
+origin_line_thickness = 4.0
+origin_antialiased = true
+labels_draw = true
+labels_x_format = "X:x"
+labels_y_format = "Y:y"
+cells_properties_draw = true
+cells_properties = Dictionary[Vector2i, ExtResource("2_8uh7m")]({
+Vector2i(0, 0): SubResource("Resource_8uh7m")
+})
+metadata/_custom_type_script = "uid://bqaldp5jfcw6l"

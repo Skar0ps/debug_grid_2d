@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="16"
+   height="16"
+   viewBox="0 0 16 16"
+   version="1.1"
+   xml:space="preserve"
+   style="clip-rule:evenodd;fill-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2"
+   id="svg2"
+   sodipodi:docname="debug_grid_2d.svg"
+   inkscape:version="1.4.2 (f4327f4, 2025-05-13)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"><defs
+   id="defs2" /><sodipodi:namedview
+   id="namedview2"
+   pagecolor="#ffffff"
+   bordercolor="#000000"
+   borderopacity="0.25"
+   inkscape:showpageshadow="2"
+   inkscape:pageopacity="0.0"
+   inkscape:pagecheckerboard="0"
+   inkscape:deskcolor="#d1d1d1"
+   inkscape:zoom="34.4375"
+   inkscape:cx="4.907441"
+   inkscape:cy="7.2450091"
+   inkscape:window-width="1920"
+   inkscape:window-height="1017"
+   inkscape:window-x="-8"
+   inkscape:window-y="1072"
+   inkscape:window-maximized="1"
+   inkscape:current-layer="svg2" />
+    
+<g
+   transform="matrix(0.12500027,0,0,0.12500027,-2.1e-5,-2.1e-5)"
+   id="g2">
+        <g
+   transform="scale(8)"
+   id="g1">
+            <path
+   id="path1"
+   style="fill:#8da5f3;fill-rule:nonzero"
+   d="m 2.9999976,1.0000187 c -1.097,0 -1.9999789,0.9029789 -1.9999789,1.9999789 V 13.000009 c 0,1.097 0.9029789,1.999979 1.9999789,1.999979 H 13.000009 c 1.097,0 1.999979,-0.902979 1.999979,-1.999979 V 2.9999976 c 0,-1.097 -0.902979,-1.9999789 -1.999979,-1.9999789 z m 0,1.9999789 h 1.9999789 2.0000374 1.9999789 1.9999792 2.000037 v 1.9999789 2.0000374 1.9999789 1.9999792 2.000037 H 10.999972 8.9999928 7.0000139 4.9999765 2.9999976 V 10.999972 8.9999928 7.0000139 4.9999765 Z" />
+        </g>
+    </g><path
+   id="path3"
+   style="fill:#fc7f7f;fill-opacity:1;stroke-width:0.0600001;stroke-linecap:round;paint-order:stroke fill markers"
+   d="M 12.999988,4.999996 H 2.999955 v 2.000042 h 10.000033 z m 0,4.000025 H 2.999955 v 1.999983 h 10.000033 z" /><path
+   id="rect2"
+   style="fill:#8eef97;fill-opacity:1;stroke-width:0.0600001;stroke-linecap:round;paint-order:stroke fill markers"
+   d="M 4.999967,2.999984 V 13.000017 H 7.000009 V 2.999984 Z m 4.000025,0 v 10.000033 h 1.999983 V 2.999984 Z" /></svg>
